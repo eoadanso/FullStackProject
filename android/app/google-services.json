@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "568989070936",
+    "project_id": "fullstackproject-7013b",
+    "storage_bucket": "fullstackproject-7013b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:568989070936:android:f37c4af1c5c5d087487c2d",
+        "android_client_info": {
+          "package_name": "com.example.instagram_clone_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "568989070936-k4sd3rk080ci03lmkfr6d3gbne0vr9dg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHhl_WWcuBwXowXWbJy45WZLrnkToZa7k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "568989070936-k4sd3rk080ci03lmkfr6d3gbne0vr9dg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
