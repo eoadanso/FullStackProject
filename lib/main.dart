@@ -6,6 +6,7 @@ import 'package:proper_project/responsive/mobile_screen_layout.dart';
 import 'package:proper_project/responsive/responsive_layout_screen.dart';
 import 'package:proper_project/responsive/web_screen_layout.dart';
 import 'package:proper_project/screens/login_screen.dart';
+import 'package:proper_project/screens/signup_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,7 +40,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: mobileBackgroundColor
       ),
       // home: const ResponsiveLayout(mobileScreenLayout: MobileScreenLayout() , webScreenLayout: WebScreenLayout(),)
-      home: LoginScreen(),
+      home: SignUpScreen(),
     );
   }
 }
