@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:proper_project/resources/auth_methods.dart';
 import 'package:proper_project/util/colors.dart';
 import 'package:proper_project/widgit/text_field_input.dart';
 
@@ -52,18 +53,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               // create a widget to accept the file we have selected
               Stack(
-                children:  [
+                children: [
                   const CircleAvatar(
                     radius: 64,
-                    backgroundImage: NetworkImage(
-                        "https://i.stack.imgur.com/l60Hf.png"),
+                    backgroundImage:
+                        NetworkImage("https://i.stack.imgur.com/l60Hf.png"),
                   ),
                   Positioned(
                       bottom: -10,
                       left: 80,
                       child: IconButton(
-                      onPressed: (){},
-                      icon: const Icon(Icons.add_a_photo))),
+                        onPressed: () {},
+                        icon: const Icon(Icons.add_a_photo),
+                        color: Colors.grey,
+                      )),
                 ],
               ),
               const SizedBox(
@@ -108,6 +111,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 height: 25,
               ),
               InkWell(
+                onTap: () async {
+                  String res = await AuthMethods().signUpUser(
+                    email: _emailController.text,
+                    password: _passwordController.text,
+                    username: _usernameController.text,
+                    bio: _bioController.text);
+                    print(res);
+                  },
                 child: Container(
                   width: double.infinity,
                   alignment: Alignment.center,
