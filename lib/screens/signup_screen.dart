@@ -22,6 +22,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _bioController = TextEditingController();
   Uint8List? _image;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -41,15 +42,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   void signUpUser() async {
-      String res = await AuthMethods().signUpUser(
-          email: _emailController.text,
-          password: _passwordController.text,
-          username: _usernameController.text,
-          bio: _bioController.text,
-          file: _image!);
-      if(res != "success"){
-
-      }
+    setState(() {
+      _isLoading = true;
+    });
+    String res = await AuthMethods().signUpUser(
+        email: _emailController.text,
+        password: _passwordController.text,
+        username: _usernameController.text,
+        bio: _bioController.text,
+        file: _image!);
+    setState(() {
+      _isLoading = false;
+    });
+    if (res != "success") {
+      showSnackBar(res, context);
+    }
   }
 
   @override
@@ -78,15 +85,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
               // create a widget to accept the file we have selected
               Stack(
                 children: [
-                 _image != null?CircleAvatar(
-              radius: 64,
-                backgroundImage: MemoryImage(_image!)
-              )
-                  : const CircleAvatar(
-                    radius: 64,
-                    backgroundImage:
-                        NetworkImage("https://i.stack.imgur.com/l60Hf.png"),
-                  ),
+                  _image != null
+                      ? CircleAvatar(
+                          radius: 64, backgroundImage: MemoryImage(_image!))
+                      : const CircleAvatar(
+                          radius: 64,
+                          backgroundImage: NetworkImage(
+                              "https://i.stack.imgur.com/l60Hf.png"),
+                        ),
                   Positioned(
                       bottom: -10,
                       left: 80,
@@ -148,7 +154,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       color: Colors.blue,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(4)))),
-                  child: const Text("Sign up"),
+                  child: _isLoading
+                      ? const Center(
+                          child: CircularProgressIndicator(
+                            color: primaryColor
+                          ),
+                        )
+                      : const Text("Sign up"),
                 ),
               ),
               const SizedBox(
