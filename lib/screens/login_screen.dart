@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:proper_project/resources/auth_methods.dart';
 import 'package:proper_project/util/colors.dart';
+import 'package:proper_project/util/utils.dart';
 import 'package:proper_project/widgit/text_field_input.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -14,6 +16,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -21,6 +24,25 @@ class _LoginScreenState extends State<LoginScreen> {
     // Clear off the controllers as soon the widgets get disposed
     _emailController.dispose();
     _passwordController.dispose();
+  }
+
+  void loginUser() async {
+    setState(() {
+      _isLoading = true;
+    });
+    String res = await AuthMethods().loginUser(
+        email: _emailController.text, password: _passwordController.text);
+    setState(() {
+      _isLoading = false;
+    });
+    if(res == "success"){
+      //
+    }else{
+      showSnackBar(res, context);
+    }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -67,6 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 height: 25,
               ),
               InkWell(
+                onTap: loginUser,
                 child: Container(
                   width: double.infinity,
                   alignment: Alignment.center,
@@ -75,7 +98,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       color: Colors.blue,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(4)))),
-                  child: const Text("Log in"),
+                  child: _isLoading ? const Center(child: CircularProgressIndicator(
+                    color: primaryColor,
+                  ),)
+                  : const Text("Log in"),
                 ),
               ),
               const SizedBox(
@@ -97,7 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     width: 2,
                   ),
                   GestureDetector(
-                    onTap: (){},
+                    onTap: () {},
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: const Text(
