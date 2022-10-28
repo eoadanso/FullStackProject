@@ -1,8 +1,12 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:proper_project/resources/auth_methods.dart';
 import 'package:proper_project/util/colors.dart';
+import 'package:proper_project/util/utils.dart';
 import 'package:proper_project/widgit/text_field_input.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -17,6 +21,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _bioController = TextEditingController();
+  Uint8List? _image;
 
   @override
   void dispose() {
@@ -26,6 +31,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _passwordController.dispose();
     _usernameController.dispose();
     _bioController.dispose();
+  }
+
+  void selectImage() async {
+    Uint8List im = await pickImage(ImageSource.gallery);
+    setState(() {
+      _image = im;
+    });
+  }
+
+  void signUpUser() async {
+      String res = await AuthMethods().signUpUser(
+          email: _emailController.text,
+          password: _passwordController.text,
+          username: _usernameController.text,
+          bio: _bioController.text,
+          file: _image!);
+      if(res != "success"){
+
+      }
   }
 
   @override
@@ -54,7 +78,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
               // create a widget to accept the file we have selected
               Stack(
                 children: [
-                  const CircleAvatar(
+                 _image != null?CircleAvatar(
+              radius: 64,
+                backgroundImage: MemoryImage(_image!)
+              )
+                  : const CircleAvatar(
                     radius: 64,
                     backgroundImage:
                         NetworkImage("https://i.stack.imgur.com/l60Hf.png"),
@@ -63,7 +91,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       bottom: -10,
                       left: 80,
                       child: IconButton(
-                        onPressed: () {},
+                        onPressed: selectImage,
                         icon: const Icon(Icons.add_a_photo),
                         color: Colors.grey,
                       )),
@@ -111,14 +139,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 height: 25,
               ),
               InkWell(
-                onTap: () async {
-                  String res = await AuthMethods().signUpUser(
-                    email: _emailController.text,
-                    password: _passwordController.text,
-                    username: _usernameController.text,
-                    bio: _bioController.text);
-                    print(res);
-                  },
+                onTap: signUpUser,
                 child: Container(
                   width: double.infinity,
                   alignment: Alignment.center,
