@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -10,19 +11,19 @@ import 'package:proper_project/screens/signup_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if(kIsWeb){
+  if (kIsWeb) {
     await Firebase.initializeApp(
-      options: const FirebaseOptions(
+        options: const FirebaseOptions(
           apiKey: "AIzaSyBMg-CZUfDuUs3OOyPtRaXFj6i5mXm1pLI",
           appId: "1:568989070936:web:9c3766f3f478cc92487c2d",
           messagingSenderId: "568989070936",
           projectId: "fullstackproject-7013b",
           storageBucket: "fullstackproject-7013b.appspot.com",
-      )
-    ) ;
+        )
+    );
   }
-  else{
-    await Firebase.initializeApp() ;
+  else {
+    await Firebase.initializeApp();
   }
   runApp(const MyApp());
 }
@@ -37,10 +38,27 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Instagram Clone',
       theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: mobileBackgroundColor
+          scaffoldBackgroundColor: mobileBackgroundColor
       ),
-      // home: const ResponsiveLayout(mobileScreenLayout: MobileScreenLayout() , webScreenLayout: WebScreenLayout(),)
-      home: LoginScreen(),
+      // For persistent state
+      home: StreamBuilder(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.active) {
+            return const ResponsiveLayout(
+              mobileScreenLayout: MobileScreenLayout(),
+              webScreenLayout: WebScreenLayout(),);
+          }else if(snapshot.hasError){
+            return Center(child: Text("${snapshot.error}"),);
+          }
+          if(snapshot.connectionState == ConnectionState.waiting){
+            return const Center(child: CircularProgressIndicator(
+              color: primaryColor,
+            ),);
+          };
+          return const LoginScreen();
+        },
+      ),
     );
   }
 }

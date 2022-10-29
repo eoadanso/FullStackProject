@@ -5,9 +5,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:proper_project/resources/auth_methods.dart';
+import 'package:proper_project/screens/login_screen.dart';
 import 'package:proper_project/util/colors.dart';
 import 'package:proper_project/util/utils.dart';
 import 'package:proper_project/widgit/text_field_input.dart';
+
+import '../responsive/mobile_screen_layout.dart';
+import '../responsive/responsive_layout_screen.dart';
+import '../responsive/web_screen_layout.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -56,7 +61,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
     });
     if (res != "success") {
       showSnackBar(res, context);
+    } else {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const ResponsiveLayout(
+                    mobileScreenLayout: MobileScreenLayout(),
+                    webScreenLayout: WebScreenLayout(),
+                  )));
     }
+  }
+
+  void navigateToLogin() {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => const LoginScreen()));
   }
 
   @override
@@ -156,9 +174,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           borderRadius: BorderRadius.all(Radius.circular(4)))),
                   child: _isLoading
                       ? const Center(
-                          child: CircularProgressIndicator(
-                            color: primaryColor
-                          ),
+                          child: CircularProgressIndicator(color: primaryColor),
                         )
                       : const Text("Sign up"),
                 ),
@@ -182,7 +198,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     width: 2,
                   ),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: navigateToLogin,
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: const Text(
