@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:proper_project/util/colors.dart';
+import 'package:proper_project/util/global_variables.dart';
 
 class MobileScreenLayout extends StatefulWidget {
   const MobileScreenLayout({Key? key}) : super(key: key);
@@ -25,26 +26,21 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
     pageController.dispose();
   }
 
-  void onPageChanged(int page){
-    _page = page;
-  }
-
-
   void navigationOnTapped(int page){
     pageController.jumpToPage(page);
+  }
+
+  void onPageChanged(int page){
+    setState(() {
+      _page = page;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageView(
-        children: [
-          Text("Home"),
-          Text("Search"),
-          Text("Add Circle"),
-          Text("Favorite"),
-          Text("Person"),
-        ],
+        children: homeScreenItem,
         physics: const NeverScrollableScrollPhysics(),
         controller: pageController,
         onPageChanged: onPageChanged,
