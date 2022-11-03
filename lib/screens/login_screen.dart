@@ -5,17 +5,17 @@ import 'package:proper_project/resources/auth_methods.dart';
 import 'package:proper_project/screens/signup_screen.dart';
 import 'package:proper_project/util/colors.dart';
 import 'package:proper_project/util/utils.dart';
-import 'package:proper_project/widgit/text_field_input.dart';
-
 import '../responsive/mobile_screen_layout.dart';
 import '../responsive/responsive_layout_screen.dart';
 import '../responsive/web_screen_layout.dart';
+import '../util/global_variables.dart';
+import '../widgets/text_field_input.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
@@ -26,7 +26,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void dispose() {
     super.dispose();
-    // Clear off the controllers as soon the widgets get disposed
     _emailController.dispose();
     _passwordController.dispose();
   }
@@ -37,123 +36,125 @@ class _LoginScreenState extends State<LoginScreen> {
     });
     String res = await AuthMethods().loginUser(
         email: _emailController.text, password: _passwordController.text);
-    setState(() {
-      _isLoading = false;
-    });
-    if (res == "success") {
-      Navigator.pushReplacement(
-          context,
+    if (res == 'success') {
+      Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
-              builder: (context) => const ResponsiveLayout(
-                mobileScreenLayout: MobileScreenLayout(),
-                webScreenLayout: WebScreenLayout(),
-              )));
+            builder: (context) => const ResponsiveLayout(
+              mobileScreenLayout: MobileScreenLayout(),
+              webScreenLayout: WebScreenLayout(),
+            ),
+          ),
+              (route) => false);
+
+      setState(() {
+        _isLoading = false;
+      });
     } else {
-      showSnackBar(res, context);
+      setState(() {
+        _isLoading = false;
+      });
+      showSnackBar(context, res);
     }
-    setState(() {
-      _isLoading = false;
-    });
-
-  }
-
-  void navigateToSignup() {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => const SignUpScreen()));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 32),
+          padding: MediaQuery.of(context).size.width > webScreenSize
+              ? EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width / 3)
+              : const EdgeInsets.symmetric(horizontal: 32),
           width: double.infinity,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Flexible(
-                flex: 2,
                 child: Container(),
+                flex: 2,
               ),
-              // svg image
               SvgPicture.asset(
-                "assets/ic_instagram.svg",
+                'assets/ic_instagram.svg',
                 color: primaryColor,
                 height: 64,
               ),
               const SizedBox(
                 height: 64,
               ),
-              // text field input for email
-              TextInputField(
-                hintText: "Enter your email",
+               TextFieldInput(
+                hintText: 'Enter your email',
                 textInputType: TextInputType.emailAddress,
                 textEditingController: _emailController,
               ),
               const SizedBox(
-                height: 25,
+                height: 24,
               ),
-              // text field input for password
-              TextInputField(
-                hintText: "Enter your password",
+              TextFieldInput(
+                hintText: 'Enter your password',
                 textInputType: TextInputType.text,
                 textEditingController: _passwordController,
                 isPass: true,
               ),
-              // button for logging in
               const SizedBox(
-                height: 25,
+                height: 24,
               ),
               InkWell(
-                onTap: loginUser,
                 child: Container(
+                  child: !_isLoading
+                      ? const Text(
+                    'Log in',
+                  )
+                      : const CircularProgressIndicator(
+                    color: primaryColor,
+                  ),
                   width: double.infinity,
                   alignment: Alignment.center,
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   decoration: const ShapeDecoration(
-                      color: Colors.blue,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(4)))),
-                  child: _isLoading
-                      ? const Center(
-                          child: CircularProgressIndicator(
-                            color: primaryColor,
-                          ),
-                        )
-                      : const Text("Log in"),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(4)),
+                    ),
+                    color: blueColor,
+                  ),
                 ),
+                onTap: loginUser,
               ),
               const SizedBox(
-                height: 15,
+                height: 12,
               ),
               Flexible(
-                flex: 2,
                 child: Container(),
+                flex: 2,
               ),
-              // transition for sign up
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
+                    child: const Text(
+                      'Dont have an account?',
+                    ),
                     padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: const Text("Don't have an account ? "),
-                  ),
-                  const SizedBox(
-                    width: 2,
                   ),
                   GestureDetector(
-                    onTap: navigateToSignup,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: const Text(
-                        "Sign up ",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const SignupScreen(),
                       ),
                     ),
-                  )
+                    child: Container(
+                      child: const Text(
+                        ' Signup.',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                    ),
+                  ),
                 ],
-              )
+              ),
             ],
           ),
         ),
